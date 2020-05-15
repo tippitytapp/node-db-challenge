@@ -58,3 +58,10 @@ function addTask(taskData, id){
                 console.log(error)
             })
         }
+function getFullProject(id){
+    return Projects('projects as p')
+            .where({id})
+            .join('project_resources as pr', 'p.id', '=', 'pr.project_id')
+            .join('tasks as t', 'p.id', '=', 't.product_id')
+            .select('p.id', 'p.project_name as name', 'p.project_description as description', 'p.project_complete')
+}
