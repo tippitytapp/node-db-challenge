@@ -22,7 +22,7 @@ exports.up = function(knex) {
             .onUpdate('CASCADE')
             .onDelete('RESTRICT');
         tasks
-            .text('task_desscription')
+            .text('task_description')
             .notNullable();
         tasks
             .text('task_notes')
@@ -47,7 +47,7 @@ exports.up = function(knex) {
             .references('id')
             .inTable('projects')
             .onUpdate('CASCADE')
-            .onDelete('RESTRICT');
+            .onDelete('RESTRICT')
         project_resources
             .integer('resource_id')
             .unsigned()
