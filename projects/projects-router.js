@@ -135,9 +135,7 @@ router.delete('/resources/:id', (req, res) => {
 router.get('/projects/:id', (req, res)=> {
     Projects.getFullProject(req.params.id)
         .then(project => {
-            res.status(200).json({
-                project
-            })
+            res.status(200).json(project)
         })
 })
 

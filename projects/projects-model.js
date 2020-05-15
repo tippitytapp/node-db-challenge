@@ -61,28 +61,55 @@ function addTask(taskData, id){
                 console.log(error)
             })
         }
-function getFullProject(id){
-    return Projects('projects as p')
-            .where({id})
-            .select('p.id as ID', 'p.project_name as name', 'p.project_description as description', 'p.project_complete as completed')
-            .then(project => {
-                let projectinfo = project
-                return Projects('tasks')
-                        .where('project_id', id)
-                        .then(tasks => {
-                            let projectwithtasks = {projectinfo, tasks}
-                            return Projects('resources as r')
-                                    .where('pr.project_id', id)
-                                    .join('project_resources as pr', 'pr.resource_id', '=', 'r.id')
-                                    .join('projects as p', 'p.id', '=', 'pr.project_id')
-                                    .then(resources => {
-                                        let projectWithTasksAndResources = {projectwithtasks, resources}
-                                        return projectWithTasksAndResources
-                                    })
 
-                        })
-            })
-}
+
+// function FullProject(id){
+
+//     return Projects('projects as p')
+//             .where({id})
+//             .select('p.id as ID', 'p.project_name as name', 'p.project_description as description', 'p.project_complete as completed')
+//             .then(project => {
+//                 let projectinfo = project
+//                 return Projects('tasks')
+//                 .where('project_id', id)
+//                         .then(tasks => {
+//                             let projectinfowithtasks = {...projectinfo, tasks}
+//                             return Projects('resources as r')
+//                                     .where('pr.project_id', id)
+//                                     .join('project_resources as pr', 'pr.resource_id', '=', 'r.id')
+//                                     .join('projects as p', 'p.id', '=', 'pr.project_id')
+//                                     .then(resources => {
+//                                         let projectWithTasksAndResources = {projectwithtasks, resources}
+//                                         return projectWithTasksAndResources
+//                                     })
+
+//                         })
+//             })
+// }
+
+async function getFullProject(id){
+    const project = await Projects('projects as p')
+            .where({id})
+            .first()
+    const tasks = await Projects('tasks')
+            .where('project_id', id)
+    const resources = await Projects('resources as r')
+            .where('project_id', id)
+            .join('project_resources as pr', 'pr.resource_id', '=', 'r.id')
+            .join('projects as p', 'p.id', '=', 'pr.project_id')
+    const fullthing = {
+        id: project.id,
+        name: project.project_name,
+        description: project.project_description,
+        completed: project.project_complete,
+        tasks: tasks,
+        resources: resources
+    }
+    return fullthing;
+        }
+
+
+
 
 function removeProject(id){
     return findProjectById(id)
