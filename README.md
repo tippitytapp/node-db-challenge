@@ -40,9 +40,17 @@ Demonstrate your understanding of this week's concepts by answering the followin
 
 - [ ] Explain the difference between `Relational Databases` and `SQL`.
 
+    -- Relational Databases store data in a relational way, sql is how we communicate, modify, create that data
+
+
 - [ ] Why do tables need a `primary key`?
 
+    -- tables need a primary key because that is the unique identifier so when we join multiple tables the tables know how to communicate and theres no risk of conflicts in the future
+
+
 - [ ] What is the name given to a table column that references the primary key on another table.
+
+    -- a foreign key?? wth the 
 
 - [ ] What do we need in order to have a _many to many_ relationship between two tables.
 
