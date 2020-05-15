@@ -8,7 +8,10 @@ module.exports={
     getProjects,
     findProjectById,
     addTask,
-    findTasks
+    findTasks,
+    removeProject,
+    removeResource,
+    getFullProject
 }
 
 function findResourceById(id){
@@ -61,7 +64,49 @@ function addTask(taskData, id){
 function getFullProject(id){
     return Projects('projects as p')
             .where({id})
-            .join('project_resources as pr', 'p.id', '=', 'pr.project_id')
-            .join('tasks as t', 'p.id', '=', 't.product_id')
-            .select('p.id', 'p.project_name as name', 'p.project_description as description', 'p.project_complete')
+            .select('p.id as ID', 'p.project_name as name', 'p.project_description as description', 'p.project_complete as completed')
+            .then(project => {
+                let projectinfo = project
+                return Projects('tasks')
+                        .where('project_id', id)
+                        .then(tasks => {
+                            let projectwithtasks = {projectinfo, tasks}
+                            return Projects('resources as r')
+                                    .where('pr.project_id', id)
+                                    .join('project_resources as pr', 'pr.resource_id', '=', 'r.id')
+                                    .join('projects as p', 'p.id', '=', 'pr.project_id')
+                                    .then(resources => {
+                                        let projectWithTasksAndResources = {projectwithtasks, resources}
+                                        return projectWithTasksAndResources
+                                    })
+
+                        })
+            })
+}
+
+function removeProject(id){
+    return findProjectById(id)
+        .then(project => {
+            const deletedPro = project
+            return Projects('projects')
+                    .where({id})
+                    .first()
+                    .del()
+                    .then(count => {
+                        return deletedPro
+                    })
+        })
+}
+function removeResource(id){
+    return findResourceById(id)
+        .then(resource => {
+            const deletedReso = resource
+            return Projects('resources')
+                    .where({id})
+                    .first()
+                    .del()
+                    .then(count => {
+                        return deletedReso
+                    })
+        })
 }
